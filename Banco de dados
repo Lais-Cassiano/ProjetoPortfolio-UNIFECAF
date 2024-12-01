@@ -1,0 +1,383 @@
+create database db_sistema_faculdade;
+
+use db_sistema_faculdade;
+
+create table tbl_professor (
+	id int not null primary key auto_increment,
+    nome_professor varchar(100) not null,
+    cpf varchar(20) not null,
+    unique index (id)
+);
+
+create table tbl_endereco (
+	id int not null primary key auto_increment,
+    logradouro varchar(200) not null,
+    numero varchar(45) not null,
+    cep varchar(45) not null,
+    bairro varchar(45) not null,
+    cidade varchar(45) not null,
+    estado varchar(45) not null,
+    id_professor int not null,
+    
+    constraint fk_professor_endereco
+    foreign key (id_professor)
+    references tbl_professor (id),
+    
+    unique index (id)
+);
+
+
+create table tbl_telefone_professor (
+	id int not null primary key auto_increment,
+    numero_professor varchar(20) not null,
+    id_professor int not null,
+    
+    constraint fk_professor_telefone_professor
+    foreign key (id_professor)
+    references tbl_professor (id),
+    
+    unique index (id)
+);
+
+create table tbl_materia (
+	id int not null primary key auto_increment,
+    nome_materia varchar(100) not null,
+    unique index (id)
+);
+
+create table tbl_materia_professor (
+	id int not null primary key auto_increment,
+    id_professor int not null,
+    id_materia int not null,
+    
+    constraint fk_professor_materia_professor
+    foreign key (id_professor)
+    references tbl_professor (id),
+    
+    constraint fk_materia_materia_professor
+    foreign key (id_materia)
+    references tbl_materia (id),
+    
+    unique index (id)
+);
+
+create table tbl_nota (
+	id int not null primary key auto_increment,
+    valor_nota float not null,
+    tipo_avaliacao varchar(100) not null,
+    data_avaliacao date not null,
+    id_materia int not null,
+    
+    constraint fk_materia_nota
+    foreign key (id_materia)
+    references tbl_materia (id),
+    
+    unique index (id)
+);
+
+create table tbl_turma (
+	id int not null primary key auto_increment,
+    sala varchar(45) not null,
+    turno varchar(45) not null,
+    id_materia int not null,
+    
+    constraint fk_materia_turma
+    foreign key (id_materia)
+    references tbl_materia (id),
+    
+    unique index (id)
+);
+
+create table tbl_curso (
+	id int not null primary key auto_increment,
+    nome_curso varchar(100) not null,
+    unique index (id)
+);
+
+create table tbl_curso_materia (
+	id int not null primary key auto_increment,
+    id_curso int not null,
+    id_materia int not null,
+    
+    constraint fk_curso_curso_materia
+    foreign key (id_curso)
+    references tbl_curso (id),
+    
+    constraint fk_materia_curso_materia
+    foreign key (id_materia)
+    references tbl_materia (id),
+    
+    unique index (id)
+);
+
+create table tbl_aluno (
+	id int not null primary key auto_increment,
+    nome_aluno varchar(100) not null,
+    data_nascimento date not null,
+    email varchar(255) not null,
+    id_curso int not null,
+    id_turma int not null,
+    
+    constraint fk_curso_aluno
+    foreign key (id_curso)
+    references tbl_curso (id),
+    
+    constraint fk_turma_aluno
+    foreign key (id_turma)
+    references tbl_turma (id),
+    
+    unique index (id)
+);
+
+create table tbl_telefone_aluno (
+	id int not null primary key auto_increment,
+    numero_aluno varchar(20) not null,
+    id_aluno int not null,
+    
+    constraint fk_aluno_telefone_aluno
+    foreign key (id_aluno)
+    references tbl_aluno (id),
+    
+    unique index (id)
+);
+
+create table tbl_aluno_nota (
+	id int not null primary key auto_increment,
+    id_nota int not null,
+    id_aluno int not null,
+    
+    constraint fk_nota_aluno_nota
+    foreign key (id_nota)
+    references tbl_nota (id),
+    
+    constraint fk_aluno_aluno_nota
+    foreign key (id_aluno)
+    references tbl_aluno (id),
+    
+    unique index (id)
+);
+
+show tables;
+
+insert into tbl_professor (nome_professor, cpf)
+values
+	('Fernando Silva', '568.468.548-88'),
+    ('Julia Pereira', '384.242.888-98'),
+    ('Mariana Souza', '443.767.886-99'),
+    ('Eduardo Andrade', '543.776.245-09'),
+    ('Luis Fernando', '612.198.130-03'),
+    ('Patricia Rocha', '814.346.783-55'),
+    ('Giovanna Silva', '345.465.221-15'),
+    ('Tiago Pereira Santos', '487.598.089-99'),
+    ('Roberto Lima', '256.342.476-88'),
+    ('Gustavo dos Santos', '118.456.422-20');
+    
+insert into tbl_curso (nome_curso)
+values
+	('Pedagogia'),
+    ('Direito'),
+    ('Administração'),
+    ('Contabilidade'),
+    ('Psicologia'),
+    ('Engenharia Civil'),
+    ('Engenharia de Produção'),
+    ('Odontologia'),
+    ('Geografia'),
+    ('Educação Física');
+    
+insert into tbl_telefone_professor (numero_professor, id_professor)
+values
+	('9876-1234', 1),
+    ('5574-2345', 1),
+    ('5546-4856', 2),
+    ('2444-5688', 3),
+    ('4456-7890', 3),
+    ('2345-3356', 4),
+    ('3289-1123', 5),
+    ('3234-8745', 6),
+    ('7786-1224', 6),
+    ('7754-3533', 7),
+    ('2221-3345', 7),
+    ('7364-3223', 8),
+    ('2133-2453', 9),
+    ('2456-4321', 10);
+    
+insert into tbl_materia (nome_materia)
+values
+	('Didática'),
+    ('Gestão da Educação'),
+    ('Bases Gerais do Direito Civil'),
+    ('Linguagem Jurídica, Expressão Textual e Verbal'),
+    ('Gestão de Projetos'),
+    ('Gestão de Pessoas'),
+    ('Administração Financeira'),
+    ('Análise de Custos'),
+    ('Neuropsicologia Cognitiva'),
+    ('Psicologia Social'),
+    ('Tecnologia das construções'),
+    ('Estruturas de materiais'),
+    ('Gestão Econômica e Empresarial'),
+    ('Gestão de Qualidade'),
+    ('Anatomia'),
+    ('Microbiologia e Imunologia'),
+    ('Cartografia'),
+    ('Estudos de regionalização'),
+    ('Fundamentos da Ginástica'),
+    ('Ética e Deontologia da Educação Física');
+
+insert into tbl_endereco (logradouro, cidade, bairro, numero, cep, estado, id_professor)
+values
+	('Rua 123', 'São Paulo', 'Jardim 123', '200A', '09895-405','São Paulo', 1),
+    ('Avenida ABC', 'São Paulo', 'Jardim ABC', '35', '05645-985','São Paulo', 2),
+    ('Rua Lua ', 'Céu', 'Jardim estrela', '123', '09324-456','Rio De Janeiro', 3),
+    ('Avenida 000', 'campo do ventos', 'Jardim das flores', '97', '55789-023','Bahia', 4),
+    ('Rua Sol', 'Cidade Alta', 'Vila do Sol', '565', '66343-634','Rio Grande do Sul', 5),
+    ('Avenida Borboleta', 'Flor azul', 'Vila Florida', '44', '82164-386','Mato Grosso', 6),
+    ('Avenida Presidente', 'Serra Azul', 'Jardim do Sul', '35B', '09175-246','Minas Gerais', 7),
+    ('Rua Fernando', 'Vila Nova', 'Vila Alegre', '602', '16459-377','Santa Catarina', 8),
+    ('Rua Pinheiro', 'Arvore Alta', 'Jardim Verde', '98', '17238-477','Tocantins', 9),
+    ('Avenida das águas', 'Água Limpa', 'Vila Marinha', '55A', '97144-345','São Paulo', 10);
+
+insert into tbl_materia_professor (id_professor, id_materia)
+values
+	(1, 1),
+    (1, 2),
+    (2, 3),
+    (2, 4),
+    (3, 5),
+    (3, 6),
+    (4, 7),
+    (4, 8),
+    (5, 9),
+    (5, 10),
+    (6, 11),
+    (6, 12),
+    (7, 13),
+    (7, 14),
+    (8, 15),
+    (8, 16),
+    (9, 17),
+    (9, 18),
+    (10, 19),
+    (10, 20);
+    
+insert into tbl_curso_materia (id_curso, id_materia)
+values
+	(1, 1),
+    (1, 2),
+    (2, 3),
+    (2, 4),
+    (3, 5),
+    (3, 6),
+    (4, 7),
+    (4, 8),
+    (5, 9),
+    (5, 10),
+    (6, 11),
+    (6, 12),
+    (7, 13),
+    (7, 14),
+    (8, 15),
+    (8, 16),
+    (9, 17),
+    (9, 18),
+    (10, 19),
+    (10, 20);
+    
+insert into tbl_turma (sala, turno, id_materia)
+values
+	('T01', 'manhã', 1),
+    ('T02', 'tarde', 2),
+    ('T03', 'tarde', 3),
+    ('T04', 'noite', 4),
+    ('T05', 'manhã', 5),
+    ('T06', 'tarde', 6),
+    ('T07', 'tarde', 7),
+    ('T08', 'noite', 8),
+    ('T09', 'noite', 9),
+    ('100', 'manhã', 10),
+    ('101', 'tarde', 11),
+    ('102', 'tarde', 12),
+    ('103', 'noite', 13),
+    ('104', 'manhã', 14),
+    ('105', 'manhã', 15),
+    ('106', 'tarde', 16),
+    ('107', 'tarde', 17),
+    ('108', 'noite', 18),
+    ('109', 'noite', 19),
+    ('110', 'manhã', 20);
+    
+insert into tbl_aluno (nome_aluno, data_nascimento, email, id_curso, id_turma)
+values
+	('Tiago Gomes', '1997-03-27', 'tiagogomes@gmail.com', 1, 1),
+    ('Beatriz Costa', '1996-07-30', 'beatrizcosta@gamil.com', 1, 2),
+    ('Daniel Pires', '2000-08-18', 'danielpires@gmail.com', 2, 3),
+    ('Juliana Santos', '2001-09-17', 'julianasantos@gmail.com', 3, 6),
+    ('Carlos Ferreira', '1998-12-28', 'carlosferreira@gmail.com', 4, 7),
+    ('Sofia Silva', '1998-02-15', 'sofiasilva@gmail.com', 5, 10),
+    ('Ana Silva', '1990-08-16', 'anasilva@gmail.com', 6, 12),
+    ('Lucas Almeida', '1988-01-27', 'lucasalmeida@gmail.com', 7, 14),
+    ('Larissa Martins', '1993-09-25', 'larissamartins@gmail.com', 8, 15),
+    ('Ricardo Mendes', '2002-07-13', 'ricardomendes@gmail.com', 9, 18),
+    ('Isabela Souza', '1985-05-29', 'isabelasouza@gmail.com', 10, 20);
+    
+insert into tbl_nota (valor_nota, tipo_avaliacao, data_avaliacao, id_materia)
+values
+	('10', 'prova', '2024-08-10', 1),
+    ('5', 'trabalho', '2024-07-30', 3),
+    ('7', 'trabalho', '2024-07-30', 5),
+    ('5.5', 'prova', '2024-08-10', 6),
+    ('8.5', 'exercicio', '2024-07-20', 8),
+    ('7', 'exercicio', '2024-07-20', 10),
+    ('6.5', 'prova', '2024-08-11', 11),
+    ('10', 'trabalho', '2024-08-30', 13),
+    ('5', 'prova', '2024-08-11', 15),
+    ('8', 'exercicio', '2024-09-02', 17);
+    
+insert into tbl_aluno_nota (id_nota, id_aluno)
+values
+	(1, 1),
+    (2, 3),
+    (3, 4),
+    (4, 5),
+    (5, 6),
+    (6, 7),
+    (7, 8),
+    (8, 9),
+    (9, 10),
+    (10, 11);
+    
+insert into tbl_telefone_aluno (numero_aluno, id_aluno)
+values
+	('9123-4567', 1),
+    ('8765-4321', 2),
+    ('4356-7890', 3),
+    ('3498-7654', 4),
+    ('5678-1234', 4),
+    ('6789-4321', 5),
+    ('8345-6789', 6),
+    ('1234-8765', 7),
+    ('9023-4561', 8),
+    ('7465-9032', 8),
+    ('5289-6743', 9),
+    ('3645-7891', 10),
+    ('8023-1567', 10),
+    ('6312-9845', 11);
+
+select * from tbl_professor;
+select * from tbl_curso;
+select * from tbl_telefone_professor;
+select * from tbl_materia;
+select * from tbl_endereco;
+select * from tbl_materia_professor;
+select * from tbl_curso_materia;
+select * from tbl_turma;
+select * from tbl_aluno;
+select * from tbl_nota;
+select * from tbl_aluno_nota;
+select * from tbl_telefone_aluno;
+
+select * from tbl_nota where valor_nota >= 6;
+select distinct estado from tbl_endereco;
+select * from tbl_endereco where logradouro like '%rua%';
+select * from tbl_turma where turno like '%manhã%';
